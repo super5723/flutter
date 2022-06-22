@@ -52,11 +52,17 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   double _progress = 0;
+  Timer? _timer;
 
   @override
   void initState() {
     super.initState();
-    Timer.periodic(const Duration(milliseconds: 500), (timer) {
+    _startTimer();
+  }
+
+  _startTimer(){
+    _progress=0;
+    _timer= Timer.periodic(const Duration(milliseconds: 500), (timer) {
       _progress += 0.01;
       if (_progress > 1) {
         timer.cancel();
@@ -80,23 +86,46 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: Center(
-        child: Container(
-          height: 200,
-          width: 200,
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: Colors.red),
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              CustomPaint(
-                size: const Size(200, 200),
-                painter:
-                RoundedRectProgressPainter(radius: 20, strokeWidth: 8, progress: _progress, color: Colors.yellow),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            GestureDetector(
+              onTap: (){
+                _timer?.cancel();
+                _startTimer();
+              },
+              child: Container(
+                padding: EdgeInsetsDirectional.all(15),
+                decoration: BoxDecoration(color: Colors.blueAccent,borderRadius: BorderRadius.circular(6)),
+                child: Text('reset'),
               ),
-              Text((_progress * 100.0).toStringAsFixed(2)),
-            ],
-          ),
-        ),
+            ),
+            SizedBox(height: 40,),
+            Container(
+              height: 300,
+              width: 200,
+              decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: Colors.red),
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  CustomPaint(
+                    size: const Size(200, 300),
+                    painter:
+                    RoundedRectProgressPainter(radius: 20, strokeWidth: 8, progress: _progress, color: Colors.yellow),
+                  ),
+                  Text((_progress * 100.0).toStringAsFixed(2)),
+                ],
+              ),
+            ),
+          ],
+        )
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _timer?.cancel();
   }
 }
