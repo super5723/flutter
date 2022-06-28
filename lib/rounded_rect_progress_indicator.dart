@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -5,6 +6,92 @@ import 'package:flutter/material.dart';
 /// @Author super5723
 /// @Description
 /// @Date 2022/6/13
+class RoundedRectProgressPage extends StatefulWidget {
+  const RoundedRectProgressPage({Key? key}) : super(key: key);
+
+  @override
+  State<RoundedRectProgressPage> createState() => _RoundedRectProgressPageState();
+
+  static open(BuildContext context){
+    Navigator.of(context).push(MaterialPageRoute(builder: (context){
+      return const RoundedRectProgressPage();
+    }));
+  }
+}
+
+class _RoundedRectProgressPageState extends State<RoundedRectProgressPage> {
+  double _progress = 0;
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    _startTimer();
+  }
+
+  _startTimer(){
+    _progress=0;
+    _timer= Timer.periodic(const Duration(milliseconds: 500), (timer) {
+      _progress += 0.01;
+      if (_progress > 1) {
+        timer.cancel();
+      }
+      setState(() {});
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('RoundedRectProgressPage'),
+      ),
+      body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              GestureDetector(
+                onTap: (){
+                  _timer?.cancel();
+                  _startTimer();
+                },
+                child: Container(
+                  padding: EdgeInsetsDirectional.all(15),
+                  decoration: BoxDecoration(color: Colors.blueAccent,borderRadius: BorderRadius.circular(6)),
+                  child: Text('reset'),
+                ),
+              ),
+              SizedBox(height: 40,),
+              Container(
+                height: 300,
+                width: 200,
+                decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: Colors.red),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    CustomPaint(
+                      size: const Size(200, 300),
+                      painter:
+                      RoundedRectProgressPainter(radius: 20, strokeWidth: 8, progress: _progress, color: Colors.yellow),
+                    ),
+                    Text((_progress * 100.0).toStringAsFixed(2)),
+                  ],
+                ),
+              ),
+            ],
+          )
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _timer?.cancel();
+  }
+}
+
+
 class RoundedRectProgressPainter extends CustomPainter {
   double radius;
   //范围从0-1

@@ -1,7 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_learn/marquee_container.dart';
 import 'package:flutter_learn/rounded_rect_progress_indicator.dart';
+import 'package:flutter_learn/transform_test.dart';
+import 'package:flutter_learn/water_wave_anim.dart';
 
 void main() {
   runApp(const MyApp());
@@ -51,25 +54,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  double _progress = 0;
-  Timer? _timer;
-
-  @override
-  void initState() {
-    super.initState();
-    _startTimer();
-  }
-
-  _startTimer(){
-    _progress=0;
-    _timer= Timer.periodic(const Duration(milliseconds: 500), (timer) {
-      _progress += 0.01;
-      if (_progress > 1) {
-        timer.cancel();
-      }
-      setState(() {});
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -91,41 +75,50 @@ class _MyHomePageState extends State<MyHomePage> {
           children: [
             GestureDetector(
               onTap: (){
-                _timer?.cancel();
-                _startTimer();
+                RoundedRectProgressPage.open(this.context);
               },
               child: Container(
                 padding: EdgeInsetsDirectional.all(15),
                 decoration: BoxDecoration(color: Colors.blueAccent,borderRadius: BorderRadius.circular(6)),
-                child: Text('reset'),
+                child: Text('圆角进度条'),
               ),
             ),
             SizedBox(height: 40,),
-            Container(
-              height: 300,
-              width: 200,
-              decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: Colors.red),
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  CustomPaint(
-                    size: const Size(200, 300),
-                    painter:
-                    RoundedRectProgressPainter(radius: 20, strokeWidth: 8, progress: _progress, color: Colors.yellow),
-                  ),
-                  Text((_progress * 100.0).toStringAsFixed(2)),
-                ],
+            GestureDetector(
+              onTap: (){
+                MarqueeContainerPage.open(this.context);
+              },
+              child: Container(
+                padding: EdgeInsetsDirectional.all(15),
+                decoration: BoxDecoration(color: Colors.blueAccent,borderRadius: BorderRadius.circular(6)),
+                child: Text('跑马灯'),
+              ),
+            ),
+            SizedBox(height: 40,),
+            GestureDetector(
+              onTap: (){
+                WaterWavePage.open(this.context);
+              },
+              child: Container(
+                padding: EdgeInsetsDirectional.all(15),
+                decoration: BoxDecoration(color: Colors.blueAccent,borderRadius: BorderRadius.circular(6)),
+                child: Text('水波纹动画'),
+              ),
+            ),
+            SizedBox(height: 40,),
+            GestureDetector(
+              onTap: (){
+                TransformTestPage.open(this.context);
+              },
+              child: Container(
+                padding: EdgeInsetsDirectional.all(15),
+                decoration: BoxDecoration(color: Colors.blueAccent,borderRadius: BorderRadius.circular(6)),
+                child: Text('贝塞尔曲线动画'),
               ),
             ),
           ],
         )
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _timer?.cancel();
   }
 }
